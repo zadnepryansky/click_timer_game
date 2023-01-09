@@ -6,71 +6,31 @@ from random import shuffle
 window = tk.Tk()
 title_icon = tk.PhotoImage(file="Fun.png")
 window.iconphoto(False, title_icon)
-
 window.geometry('500x450+500+100')
 window.title('Timer Calculator')
 window.config(bg='#272740')
 
-window.minsize(500, 400)
-window.maxsize(600, 400)
-window.resizable(True, True)
-
-def get_time():
-   s = time.time()
-   if random_color_btn['bg'] != 'red':
-       e = time.time()
-       print(e - s)
-
-
-counter = 0
-counter_2 = 0
-counter_3 = 0
-def get_count():
-    global counter, counter_2, counter_3
-    with open('score.txt', 'w') as score:
-        if random_color_btn['bg'] == 'red':
-            counter += 1
-            score_label['text'] = f'Click on red color: {counter}'
-            random_color_btn['text'] = "Good!"
-        elif random_color_btn['bg'] == 'green':
-            counter_2 += 1
-            score_label['text'] = f'Click on green color: {counter_2}'
-            random_color_btn['text'] = f'Oooppss!'
-        elif random_color_btn['bg'] == 'yellow':
-            counter_3 += 1
-            score_label['text'] = f'Click on yellow color: {counter_3}'
-            random_color_btn['text'] = f'Oooppss!'
-        score.write(f'--- You click on :---\nRed button: {counter} times! \nGreen button: {counter_2} times'
-                    f' \nYellow button: {counter_3} times!\n')
-
-def get_random_color_btn():
-    colors = ['red', 'green', 'yellow']
-    result = random_color_btn['bg'] = random.choice(colors)
-    random_color_btn.config(bg=result)
-    random_color_btn['state'] = 'disabled'
-
-    random_color_btn.after(1500, get_random_color_btn)
-
-
+window.resizable(height=False, width=False)
 
 def update_title():
     title_label.config(text='Do you want testing your reaction?',
-                       width=30,
+                       width=40,
                        fg='orange',
-                       height=2,
-                       pady=40,
+                       height=30,
+                       pady=5,
+                       padx=3,
                        font=('Verdana', 18, 'bold'))
-    btn_yes.pack()
-    btn_no.pack()
+    btn_yes.place(relx=0.4, rely=0.5, anchor='center')
+    btn_no.place(relx=0.6, rely=0.5, anchor='center')
 
 
 def if_yes_button():
-    title_label.config(text='''Enter your name, please
-    and press Enter''')
+    title_label.config(text='''Please, write your name
+    and press "Enter"''')
     btn_yes.destroy()
     btn_no.destroy()
-    enter_name_field.pack()
-    btn_enter_name.pack()
+    enter_name_field.place(relx=0.5, rely=0.45, anchor='center')
+    enter_name_button.place(relx=0.5, rely=0.55, anchor='center')
 
 
 def if_no_button():
@@ -82,8 +42,8 @@ def get_enter_name():
     if name.isalpha():
         title_label.config(text=f'Hello, {name} !')
         enter_name_field.destroy()
-        btn_enter_name.destroy()
-        next_btn.pack()
+        enter_name_button.destroy()
+        next_btn.place(relx=0.5, rely=0.5, anchor='center')
     else:
         title_label.config(text=f'Empty field, please enter you name')
 
@@ -92,14 +52,91 @@ def get_next():
     title_label.config(text='''  You must have time to click 
     RED BUTTON''')
     next_btn.destroy()
-    OK_btn.pack()
+    OK_btn.place(relx=0.5, rely=0.5, anchor='center')
+
+def get_random_color():
+    color = random.choice(['red', 'green', 'yellow'])
+    return color
+
+
+start = time.time()
+
+counter_red_color = 0
+counter_green_color = 0
+counter_yellow_color = 0
+
+
+def score():
+    global game_counter
+    tk.Label(window, text=f'''Finish! Your score is:
+    Red: {counter_red_color},
+    Green: {counter_green_color},
+    Yellow: {counter_yellow_color}''',
+             bg='#272740',
+             font=('Verdana', 15, 'bold'),
+             fg='Orange',
+             width=40).place(relx=0.5, rely=0.2, anchor='center')
+
+
+    with open('score.txt', 'w+') as f:
+        f.write(f'--- You click on :---\nRed button: {counter_red_color} times! \nGreen button: {counter_green_color} times'
+            f' \nYellow button: {counter_yellow_color} times!\n')
+
+
+game_counter = 5
+def get_time():
+    global start,counter_red_color, counter_yellow_color, counter_green_color
+    if random_color_button['bg'] == 'red':
+        counter_red_color += 1
+        e = time.time()
+        result = e - start
+        a = round(result, 2)
+        print(e - start)
+        tk.Label(window, text=f'Your time: {a} sec',
+                 font=('Verdana', 18, 'bold'),
+                 fg='white',
+                 bg='#272740').place(relx=0.5, rely=0.2, anchor='center')
+    elif random_color_button['bg'] == 'yellow':
+        counter_yellow_color += 1
+    elif random_color_button['bg'] == 'green':
+        counter_green_color += 1
+
+
+def img():
+    global game_counter
+    tk.Label(window, text=f'{game_counter}').pack()
+    game_counter -= 1
+    if game_counter == 0:
+        print('Score is done!')
+        score()
+    for i in range(3):
+        global start
+        random_color_button['bg'] = get_random_color()
+        window.update()
+        time.sleep(0.12)
+        start = time.time()
 
 
 def start_game():
-    random_color_btn.pack()
+    title_label.destroy()
     OK_btn.destroy()
-    score_btn.pack()
+    click.place(relx=0.5, rely=0.7, anchor='n')
+    random_color_button.place(relx=0.5, rely=0.5, anchor='center')
 
+
+click = tk.Button(window,
+                  text='START',
+                  font=('Verdana', 15),
+                  command=img)
+
+random_color_button = tk.Button(window,
+                                text='',
+                                pady=30,
+                                padx=100,
+                                font=('Verdana', 16),
+                                bg='white',
+                                border='2',
+                                command=get_time)
 
 title_label = tk.Label(window,
                        text="Hello!",
@@ -109,8 +146,8 @@ title_label = tk.Label(window,
                        pady=30,
                        width=10,
                        height=2)
-title_label.pack(pady=20)
-title_label.after(2000, update_title)
+title_label.place(relx=0.5, rely=0.3, anchor='center')
+title_label.after(1000, update_title)
 
 score_label = tk.Label(window, text='',
                        bg= "#272740",
@@ -126,58 +163,39 @@ enter_name_field = tk.Entry(window,
                             )
 
 btn_yes = tk.Button(window, text='Yes',
+                    padx=40,
+                    pady=10,
                     activebackground='green',
-                    padx=30,
-                    pady=8,
                     font=('Verdana', 11, 'bold'),
                     relief=tk.RAISED,
                     command=if_yes_button)
 
 btn_no = tk.Button(window, text='No',
                    activebackground='red',
-                   padx=34,
-                   pady=8,
+                   padx=40,
+                   pady=10,
                    font=('Verdana', 11, 'bold'),
                    relief=tk.RAISED,
                    command=if_no_button)
 
-random_color_btn = tk.Button(window, text='',
-                             bg='white',
-                             fg='black',
-                             font=('Verdana', 11),
-                             width=30,
-                             height=5,
-                             relief=tk.RAISED,
-                             command=get_random_color_btn
-                             )
-random_color_btn.after(1500, get_random_color_btn)
-score_btn = tk.Button(window,text="Click!",
-                            bg='white',
-                             fg='black',
-                             font=('Verdana', 11),
-                             width=20,
-                             height=3,
-                             relief=tk.RAISED,
-                            command=get_count)
-
-btn_enter_name = tk.Button(window, text='Enter',
-                           activebackground='green',
-                           padx=20,
-                           pady=5,
-                           font=('Verdana', 11, 'bold'),
-                           command=get_enter_name)
+enter_name_button = tk.Button(window, text='Enter',
+                              activebackground='green',
+                              padx=40,
+                              pady=10,
+                              font=('Verdana', 11, 'bold'),
+                              command=get_enter_name)
 
 next_btn = tk.Button(window, text='Next',
                      activebackground='green',
-                     padx=20,
-                     pady=5,
+                     padx=40,
+                     pady=10,
                      font=('Verdana', 11, 'bold'),
                      command=get_next)
 
 OK_btn = tk.Button(window, text="OK",
                    activebackground='green',
-                   padx=20,
-                   pady=5,
+                   padx=40,
+                   pady=10,
                    font=('Verdana', 11, 'bold'),
                    command=start_game)
 
