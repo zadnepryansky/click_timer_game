@@ -94,39 +94,40 @@ TIME_LABEL = tk.Label(window, text='',
 def score():
     global ALL_GAME_COUNTER, BEST_TIME, NAME_USER
     SCORE_LABEL.place(relx=0.5, rely=0.2, anchor='center')
-
     minimum = round(min(BEST_TIME), 2)
-    if len(BEST_TIME) > 2:
-        print(f'Your best time: {minimum} sec!')
-        with open('score.txt', 'w+') as f:
-            f.write(f'-- User name: {NAME_USER}. --'
-                    f'\nYou click on :'
-                    f'\nRed button: {COUNTER_RED_COLOR} times!'
-                    f'\nGreen button: {COUNTER_GREEN_COLOR} times'
-                    f'\nYellow button: {COUNTER_YELLOW_COLOR} times!'
-                    f'\nBlue button: {COUNTER_BLUE_COLOR} times'
-                    f'\n-- Your best time: {minimum} sec --')
-    else:
-        print('Sorry statistic is NONE')
+    TIME_LABEL['text'] = f'Best time: {minimum}'
+    # TIME_LABEL.
+    print(f'Your best time: {minimum} sec!')
+    with open('score.txt', 'w+') as f:
+        f.write(f'-- User name: {NAME_USER}. --'
+                f'\nYou click on :'
+                f'\nRed button: {COUNTER_RED_COLOR} times!'
+                f'\nGreen button: {COUNTER_GREEN_COLOR} times'
+                f'\nYellow button: {COUNTER_YELLOW_COLOR} times!'
+                f'\nBlue button: {COUNTER_BLUE_COLOR} times'
+                f'\n-- Your best time: {minimum} sec --')
+    # else:
+    #     print('Sorry statistic is NONE')
 
 
 BEST_TIME = []
 
 
 def get_time():
-    global START_TIME, COUNTER_RED_COLOR, COUNTER_YELLOW_COLOR, COUNTER_GREEN_COLOR,\
+    global START_TIME, COUNTER_RED_COLOR, COUNTER_YELLOW_COLOR, COUNTER_GREEN_COLOR, \
         COUNTER_BLUE_COLOR, BEST_TIME, ALL_GAME_COUNTER
 
     if random_color_button['bg'] == 'red':
         COUNTER_RED_COLOR += 1
         ALL_GAME_COUNTER -= 1
-        number_of_attempts_btn['text'] = f'Attempts: {ALL_GAME_COUNTER}'
+
+        number_of_attempts_btn.config(text= f'Attempts: {ALL_GAME_COUNTER}')
         random_color_button['text'] = f'Good!'
 
         click_on_red_bnt_time = time.time()
         result = click_on_red_bnt_time - START_TIME
         score_time = round(result, 2)
-
+        # is_more_than_one_score =
         BEST_TIME.append(result)
 
         TIME_LABEL.place(relx=0.5, rely=0.2, anchor='center')
@@ -144,8 +145,9 @@ def get_time():
 
 
 def img():
-    global ALL_GAME_COUNTER
+    number_of_attempts_btn.place(relx=0.5, rely=0.9, anchor='center')
     if ALL_GAME_COUNTER == 0:
+        number_of_attempts_btn.destroy()
         print('Score is done! Look statistic in score.txt!')
         score()
     for i in range(3):
@@ -158,8 +160,6 @@ def img():
 
 def start_game():
     print('Game started!')
-    number_of_attempts_btn.place(relx=0.5, rely=0.9, anchor='center')
-    number_of_attempts_btn['text'] = f'Attempts: {ALL_GAME_COUNTER}'
     title_label.destroy()
     OK_btn.destroy()
     click.place(relx=0.5, rely=0.7, anchor='n')
@@ -167,7 +167,7 @@ def start_game():
 
 
 number_of_attempts_btn = tk.Button(window,
-                                   text='',
+                                   text=f'Attempt:{ALL_GAME_COUNTER}',
                                    font=('Verdana', 12))
 
 click = tk.Button(window,
