@@ -6,9 +6,9 @@ def get_random_color():
     color = random.choice(['red', 'green', 'yellow'])
     return color
 
-start = time.time()
+START_TIME = time.time()
 def get_time():
-    global start
+    global START_TIME
     if lab1['bg'] == 'red':
         e = time.time()
         print(e - start)
@@ -20,7 +20,7 @@ def img():
     if count == 2:
         print('5 Count')
     for i in range(15):
-        global start
+        global START_TIME
         lab1['bg'] = get_random_color()
         win.update()
         time.sleep(0.1200)

@@ -1,4 +1,7 @@
---- You click on :---
-Red button: 0 times! 
-Green button: 2 times 
-Yellow button: 2 times!
+-- User name: c  . --
+You click on :
+Red button: 3 times!
+Green button: 3 times
+Yellow button: 3 times!
+Blue button: 1 times
+-- Your best time: 0.19 sec --
