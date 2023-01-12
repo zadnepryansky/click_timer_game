@@ -1,7 +1,6 @@
 import random
 import time
 import tkinter as tk
-from random import shuffle
 
 window = tk.Tk()
 title_icon = tk.PhotoImage(file="Fun.png")
@@ -14,14 +13,34 @@ window.resizable(height=False, width=False)
 
 NAME_USER = ''
 
-ALL_GAME_COUNTER = 3
+ALL_GAME_COUNTER = 0
 
 START_TIME = time.time()
+BEST_TIME = []
 
 COUNTER_RED_COLOR = 0
 COUNTER_GREEN_COLOR = 0
 COUNTER_YELLOW_COLOR = 0
 COUNTER_BLUE_COLOR = 0
+
+
+def score():
+    global ALL_GAME_COUNTER, BEST_TIME, NAME_USER, COUNTER_RED_COLOR, COUNTER_YELLOW_COLOR, \
+        COUNTER_GREEN_COLOR, COUNTER_BLUE_COLOR
+    minimum = round(min(BEST_TIME), 2)
+    TIME_LABEL['text'] = f'''\n Finish!\n
+    
+    Your best time: {minimum} sec'''
+    print(f'Your best time: {minimum} sec!')
+
+    with open('score.txt', 'w+') as f:
+        f.write(f'-- User name: {NAME_USER}. --'
+                f'\nYou click on :'
+                f'\nRed button: {COUNTER_RED_COLOR} times!'
+                f'\nGreen button: {COUNTER_GREEN_COLOR} times'
+                f'\nYellow button: {COUNTER_YELLOW_COLOR} times!'
+                f'\nBlue button: {COUNTER_BLUE_COLOR} times'
+                f'\n-- Your best time: {minimum} sec --')
 
 
 def update_title():
@@ -69,48 +88,22 @@ def get_next():
 
 
 def get_random_color():
-    click['text'] = 'refresh colors'
-    random_color_button['text'] = ''
-    color = ['red', 'green', 'yellow', 'blue']
-    colors_item = (random.choice(color))
-    return colors_item
+    global START_TIME
+    try:
+        start_btn.destroy()
+        color = ['red', 'green', 'yellow', 'blue']
+        colors_item = (random.choice(color))
+        random_color_button.config(bg=colors_item)
+        window.after(1800, get_random_color)
+        START_TIME = time.time()
+    except Exception as a:
+        err = [a]
 
-
-SCORE_LABEL = tk.Label(window, text=f'''Finish! Your score is:
-    Red: {COUNTER_RED_COLOR},
-    Green: {COUNTER_GREEN_COLOR},
-    Yellow: {COUNTER_YELLOW_COLOR}''',
-                       bg='#272740',
-                       font=('Verdana', 15, 'bold'),
-                       fg='Orange',
-                       width=40)
 
 TIME_LABEL = tk.Label(window, text='',
                       font=('Verdana', 18, 'bold'),
                       fg='white',
                       bg='#272740')
-
-
-def score():
-    global ALL_GAME_COUNTER, BEST_TIME, NAME_USER
-    SCORE_LABEL.place(relx=0.5, rely=0.2, anchor='center')
-    minimum = round(min(BEST_TIME), 2)
-    TIME_LABEL['text'] = f'Best time: {minimum}'
-    # TIME_LABEL.
-    print(f'Your best time: {minimum} sec!')
-    with open('score.txt', 'w+') as f:
-        f.write(f'-- User name: {NAME_USER}. --'
-                f'\nYou click on :'
-                f'\nRed button: {COUNTER_RED_COLOR} times!'
-                f'\nGreen button: {COUNTER_GREEN_COLOR} times'
-                f'\nYellow button: {COUNTER_YELLOW_COLOR} times!'
-                f'\nBlue button: {COUNTER_BLUE_COLOR} times'
-                f'\n-- Your best time: {minimum} sec --')
-    # else:
-    #     print('Sorry statistic is NONE')
-
-
-BEST_TIME = []
 
 
 def get_time():
@@ -119,15 +112,14 @@ def get_time():
 
     if random_color_button['bg'] == 'red':
         COUNTER_RED_COLOR += 1
-        ALL_GAME_COUNTER -= 1
+        ALL_GAME_COUNTER += 1
+        number_of_attempts_btn['text'] = f'Remains only:{ALL_GAME_COUNTER}'
 
-        number_of_attempts_btn.config(text= f'Attempts: {ALL_GAME_COUNTER}')
         random_color_button['text'] = f'Good!'
 
         click_on_red_bnt_time = time.time()
         result = click_on_red_bnt_time - START_TIME
         score_time = round(result, 2)
-        # is_more_than_one_score =
         BEST_TIME.append(result)
 
         TIME_LABEL.place(relx=0.5, rely=0.2, anchor='center')
@@ -142,38 +134,38 @@ def get_time():
     elif random_color_button['bg'] == 'blue':
         COUNTER_BLUE_COLOR += 1
         random_color_button['text'] = 'Ooops!'
+    if ALL_GAME_COUNTER == 3:
+        number_of_attempts_btn.destroy()
+        print('Score is done! Look statistic in score.txt!')
+        score()
+        random_color_button.destroy()
 
 
 def img():
     number_of_attempts_btn.place(relx=0.5, rely=0.9, anchor='center')
-    if ALL_GAME_COUNTER == 0:
-        number_of_attempts_btn.destroy()
-        print('Score is done! Look statistic in score.txt!')
-        score()
     for i in range(3):
         global START_TIME
-        random_color_button['bg'] = get_random_color()
+        get_random_color()
         window.update()
-        time.sleep(0.12)
-        START_TIME = time.time()
+        time.sleep(0.2)
 
 
 def start_game():
     print('Game started!')
     title_label.destroy()
     OK_btn.destroy()
-    click.place(relx=0.5, rely=0.7, anchor='n')
+    start_btn.place(relx=0.5, rely=0.7, anchor='n')
     random_color_button.place(relx=0.5, rely=0.5, anchor='center')
 
 
 number_of_attempts_btn = tk.Button(window,
-                                   text=f'Attempt:{ALL_GAME_COUNTER}',
+                                   text=f'3 attempts',
                                    font=('Verdana', 12))
 
-click = tk.Button(window,
-                  text='START',
-                  font=('Verdana', 15),
-                  command=img)
+start_btn = tk.Button(window,
+                      text='START',
+                      font=('Verdana', 15),
+                      command=img)
 
 random_color_button = tk.Button(window,
                                 text='',
