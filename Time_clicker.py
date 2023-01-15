@@ -28,9 +28,14 @@ def score():
     global ALL_GAME_COUNTER, BEST_TIME, NAME_USER, COUNTER_RED_COLOR, COUNTER_YELLOW_COLOR, \
         COUNTER_GREEN_COLOR, COUNTER_BLUE_COLOR
     minimum = round(min(BEST_TIME), 2)
-    TIME_LABEL['text'] = f'''\n Finish!\n
-    
-    Your best time: {minimum} sec'''
+    TIME_LABEL['text'] = f'''
+                \n Finish!\n
+                \nYour best time: {minimum} sec
+                \nRed button: {COUNTER_RED_COLOR} times!
+                \nGreen button: {COUNTER_GREEN_COLOR} times!
+                \nYellow button: {COUNTER_YELLOW_COLOR} times!
+                \nBlue button: {COUNTER_BLUE_COLOR} times!
+'''
     print(f'Your best time: {minimum} sec!')
 
     with open('score.txt', 'w+') as f:
@@ -39,7 +44,7 @@ def score():
                 f'\nRed button: {COUNTER_RED_COLOR} times!'
                 f'\nGreen button: {COUNTER_GREEN_COLOR} times'
                 f'\nYellow button: {COUNTER_YELLOW_COLOR} times!'
-                f'\nBlue button: {COUNTER_BLUE_COLOR} times'
+                f'\nBlue button: {COUNTER_BLUE_COLOR} times!'
                 f'\n-- Your best time: {minimum} sec --')
 
 
@@ -101,7 +106,7 @@ def get_random_color():
 
 
 TIME_LABEL = tk.Label(window, text='',
-                      font=('Verdana', 18, 'bold'),
+                      font=('Verdana', 15, 'bold'),
                       fg='white',
                       bg='#272740')
 
@@ -122,7 +127,7 @@ def get_time():
         score_time = round(result, 2)
         BEST_TIME.append(result)
 
-        TIME_LABEL.place(relx=0.5, rely=0.2, anchor='center')
+        TIME_LABEL.place(relx=0.5, rely=0.4, anchor='center')
         TIME_LABEL["text"] = f'Your time: {score_time} sec'
 
     elif random_color_button['bg'] == 'yellow':
