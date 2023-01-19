@@ -127,7 +127,7 @@ def get_time():
         score_time = round(result, 2)
         BEST_TIME.append(result)
 
-        TIME_LABEL.place(relx=0.5, rely=0.4, anchor='center')
+        TIME_LABEL.place(relx=0.5, rely=0.7, anchor='center')
         TIME_LABEL["text"] = f'Your time: {score_time} sec'
 
     elif random_color_button['bg'] == 'yellow':
